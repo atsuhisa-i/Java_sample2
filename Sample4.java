@@ -5,7 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.event.*;
 
-public class Practice1 extends Application
+public class Sample4 extends Application
 {
   private Label lb;
   private Button bt;
@@ -33,11 +33,12 @@ public class Practice1 extends Application
     stage.setTitle("サンプル");
     stage.show();
   }
+
   class SampleEventHandler implements EventHandler<ActionEvent>
   {
     public void handle(ActionEvent e)
     {
-      bt.setText("Thanks!");
+      lb.setText("ご購入ありがとうございます。");
     }
   }
 }

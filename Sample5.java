@@ -3,12 +3,12 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.input.*;
 import javafx.event.*;
 
-public class Practice1 extends Application
+public class Sample5 extends Application
 {
   private Label lb;
-  private Button bt;
 
   public static void main(String[] args)
   {
@@ -17,27 +17,23 @@ public class Practice1 extends Application
   public void start(Stage stage)throws Exception
   {
     lb = new Label("いらっしゃいませ。");
-    bt = new Button("購入");
 
     BorderPane bp = new BorderPane();
 
     bp.setTop(lb);
-    bp.setCenter(bt);
-
-    bt.setOnAction(new SampleEventHandler());
 
     Scene sc = new Scene(bp, 300, 200);
 
-    stage.setScene(sc);
+    sc.addEventHandler(MouseEvent.MOUSE_CLICKED, new SampleEventHandler());
 
-    stage.setTitle("サンプル");
+    stage.setScene(sc);
     stage.show();
   }
-  class SampleEventHandler implements EventHandler<ActionEvent>
+  class SampleEventHandler implements EventHandler<MouseEvent>
   {
-    public void handle(ActionEvent e)
+    public void handle(MouseEvent e)
     {
-      bt.setText("Thanks!");
+      lb.setText("ご購入ありがとうございます。");
     }
   }
 }

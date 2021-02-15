@@ -3,9 +3,8 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.event.*;
 
-public class Practice1 extends Application
+public class Sample3 extends Application
 {
   private Label lb;
   private Button bt;
@@ -24,20 +23,11 @@ public class Practice1 extends Application
     bp.setTop(lb);
     bp.setCenter(bt);
 
-    bt.setOnAction(new SampleEventHandler());
-
     Scene sc = new Scene(bp, 300, 200);
 
     stage.setScene(sc);
 
     stage.setTitle("サンプル");
     stage.show();
-  }
-  class SampleEventHandler implements EventHandler<ActionEvent>
-  {
-    public void handle(ActionEvent e)
-    {
-      bt.setText("Thanks!");
-    }
   }
 }
