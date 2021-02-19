@@ -5,10 +5,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import javafx.event.*;
+import javafx.scene.image.*;
 
 public class Practice2 extends Application
 {
-  private Button bt;
+  private Label lb;
+  private CheckBox ch;
+  private Image im;
+  private ImageView iv;
 
   public static void main(String[] args)
   {
@@ -16,31 +20,37 @@ public class Practice2 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    bt = new Button("ようこそ。");
+    lb = new Label("車です。");
+    ch = new CheckBox("画像の表示");
+
+    im = new Image(getClass().getResourceAsStream("時計.jpg"));
+    iv = new ImageView(im);
 
     BorderPane bp = new BorderPane();
 
-    bp.setCenter(bt);
+    bp.setCenter(lb);
+    bp.setBottom(ch);
+
+    ch.setOnAction(new SampleEventHandler());
 
     Scene sc = new Scene(bp, 300, 200);
 
-    sc.addEventHandler(MouseEvent.MOUSE_ENTERED, new SampleEventHandler());
-    sc.addEventHandler(MouseEvent.MOUSE_EXITED, new SampleEventHandler());
-
     stage.setScene(sc);
+
     stage.setTitle("サンプル");
     stage.show();
   }
-  class SampleEventHandler implements EventHandler<MouseEvent>
+
+  class SampleEventHandler implements EventHandler<ActionEvent>
   {
-    public void handle(MouseEvent e)
+    public void handle(ActionEvent e)
     {
-      if(e.getEventType() == MouseEvent.MOUSE_ENTERED){
-        bt.setText("いらっしゃいませ。");
+      CheckBox tmp = (CheckBox) e.getSource();
+      if(tmp.isSelected() == true){
+        lb.setGraphic(iv);
       }
-      else if(e.getEventType() == MouseEvent.MOUSE_EXITED)
-      {
-        bt.setText("ようこそ。");
+      else if(tmp.isSelected() == false){
+        lb.setGraphic(null);
       }
     }
   }
