@@ -6,8 +6,7 @@ import javafx.scene.layout.*;
 
 public class Sample3 extends Application
 {
-  private Label lb;
-  private Button bt;
+  private Button[][] bt = new Button[6][3];
 
   public static void main(String[] args)
   {
@@ -15,15 +14,20 @@ public class Sample3 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    lb = new Label("いらっしゃいませ。");
-    bt = new Button("購入");
+    for(int i=0; i<bt.length; i++){
+      for(int j=0; j<bt[i].length; j++){
+        bt[i][j] = new Button(Integer.toString(i) + Integer.toString(j));
+      }
+    }
 
-    BorderPane bp = new BorderPane();
+    GridPane gp = new GridPane();
 
-    bp.setTop(lb);
-    bp.setCenter(bt);
-
-    Scene sc = new Scene(bp, 300, 200);
+    for(int i=0; i<bt.length; i++){
+      for(int j=0; j<bt[i].length; j++){
+        gp.add(bt[i][j], i, j);
+      }
+    }
+    Scene sc = new Scene(gp, 300, 200);
 
     stage.setScene(sc);
 

@@ -5,14 +5,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import javafx.event.*;
-import javafx.scene.image.*;
+import javafx.geometry.*;
 
-public class Practice2 extends Application
+public class Sample9 extends Application
 {
   private Label lb;
-  private CheckBox ch;
-  private Image im;
-  private ImageView iv;
+  private CheckBox ch1, ch2;
 
   public static void main(String[] args)
   {
@@ -20,18 +18,22 @@ public class Practice2 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    lb = new Label("車です。");
-    ch = new CheckBox("画像の表示");
-
-    im = new Image(getClass().getResourceAsStream("時計.jpg"));
-    iv = new ImageView(im);
+    lb = new Label("いらっしゃいませ。");
+    ch1 = new CheckBox("車");
+    ch2 = new CheckBox("トラック");
 
     BorderPane bp = new BorderPane();
+    HBox hb = new HBox();
 
-    bp.setCenter(lb);
-    bp.setBottom(ch);
+    hb.getChildren().add(ch1);
+    hb.getChildren().add(ch2);
+    hb.setAlignment(Pos.CENTER);
 
-    ch.setOnAction(new SampleEventHandler());
+    bp.setTop(lb);
+    bp.setCenter(hb);
+
+    ch1.setOnAction(new SampleEventHandler());
+    ch2.setOnAction(new SampleEventHandler());
 
     Scene sc = new Scene(bp, 300, 200);
 
@@ -47,10 +49,10 @@ public class Practice2 extends Application
     {
       CheckBox tmp = (CheckBox) e.getSource();
       if(tmp.isSelected() == true){
-        lb.setGraphic(iv);
+        lb.setText(tmp.getText() + "を選びました。");
       }
       else if(tmp.isSelected() == false){
-        lb.setGraphic(null);
+        lb.setText(tmp.getText() + "をやめました。");
       }
     }
   }

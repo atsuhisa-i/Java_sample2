@@ -7,12 +7,11 @@ import javafx.scene.input.*;
 import javafx.event.*;
 import javafx.scene.image.*;
 
-public class Practice2 extends Application
+public class Sample8 extends Application
 {
   private Label lb;
-  private CheckBox ch;
+  private Button bt;
   private Image im;
-  private ImageView iv;
 
   public static void main(String[] args)
   {
@@ -20,18 +19,18 @@ public class Practice2 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    lb = new Label("車です。");
-    ch = new CheckBox("画像の表示");
+    lb = new Label("いらっしゃいませ。");
+    bt = new Button("購入");
 
     im = new Image(getClass().getResourceAsStream("時計.jpg"));
-    iv = new ImageView(im);
+    bt.setGraphic(new ImageView(im));
 
     BorderPane bp = new BorderPane();
 
-    bp.setCenter(lb);
-    bp.setBottom(ch);
+    bp.setTop(lb);
+    bp.setCenter(bt);
 
-    ch.setOnAction(new SampleEventHandler());
+    bt.setOnAction(new SampleEventHandler());
 
     Scene sc = new Scene(bp, 300, 200);
 
@@ -45,13 +44,8 @@ public class Practice2 extends Application
   {
     public void handle(ActionEvent e)
     {
-      CheckBox tmp = (CheckBox) e.getSource();
-      if(tmp.isSelected() == true){
-        lb.setGraphic(iv);
-      }
-      else if(tmp.isSelected() == false){
-        lb.setGraphic(null);
-      }
+      lb.setText("ご購入ありがとうございます。");
+      bt.setDisable(true);
     }
   }
 }

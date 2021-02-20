@@ -4,14 +4,13 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
-import javafx.scene.text.*;
 import javafx.event.*;
 import javafx.geometry.*;
 
-public class Practice3 extends Application
+public class Sample10 extends Application
 {
   private Label lb;
-  private RadioButton rb1, rb2, rb3;
+  private RadioButton rb1, rb2;
   private ToggleGroup tg;
 
   public static void main(String[] args)
@@ -20,15 +19,13 @@ public class Practice3 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    lb = new Label("Hello!");
-    rb1 = new RadioButton("普通");
-    rb2 = new RadioButton("太字");
-    rb3 = new RadioButton("イタリック");
+    lb = new Label("いらっしゃいませ。");
+    rb1 = new RadioButton("車");
+    rb2 = new RadioButton("トラック");
     tg = new ToggleGroup();
 
     rb1.setToggleGroup(tg);
     rb2.setToggleGroup(tg);
-    rb3.setToggleGroup(tg);
 
     rb1.setSelected(true);
 
@@ -37,7 +34,6 @@ public class Practice3 extends Application
 
     hb.getChildren().add(rb1);
     hb.getChildren().add(rb2);
-    hb.getChildren().add(rb3);
     hb.setAlignment(Pos.CENTER);
 
     bp.setTop(lb);
@@ -45,7 +41,6 @@ public class Practice3 extends Application
 
     rb1.setOnAction(new SampleEventHandler());
     rb2.setOnAction(new SampleEventHandler());
-    rb3.setOnAction(new SampleEventHandler());
 
     Scene sc = new Scene(bp, 300, 200);
 
@@ -59,14 +54,7 @@ public class Practice3 extends Application
     public void handle(ActionEvent e)
     {
       RadioButton tmp = (RadioButton) e.getSource();
-      if(tmp == rb1)
-        lb.setFont(Font.font("Serif", 12));
-      
-      else if(tmp == rb2)
-        lb.setFont(Font.font("Serif", FontWeight.BOLD, 12));
-      
-      else if(tmp == rb3)
-        lb.setFont(Font.font("Serif", FontPosture.ITALIC, 12));
+      lb.setText(tmp.getText() + "を選びました。");
     }
   }
 }

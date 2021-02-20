@@ -3,12 +3,12 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.input.*;
-import javafx.event.*;
+import javafx.scene.paint.*;
+import javafx.scene.text.*;
 
 public class Sample6 extends Application
 {
-  private Label lb;
+  private Label[] lb = new Label[3];
 
   public static void main(String[] args)
   {
@@ -16,34 +16,31 @@ public class Sample6 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    lb = new Label("いらっしゃいませ。");
+    for(int i=0; i<lb.length; i++){
+      lb[i] = new Label("This is a car.");
+    }
+
+    lb[0].setTextFill(Color.BLACK);
+    lb[1].setTextFill(Color.BLUE);
+    lb[2].setTextFill(Color.RED);
+
+    lb[0].setFont(Font.font("Serif", 12));
+    lb[1].setFont(Font.font("SansSerif", FontPosture.ITALIC, 14));
+    lb[2].setFont(Font.font("SansSerif", FontWeight.BLACK, 16));
 
     BorderPane bp = new BorderPane();
+    VBox vb = new VBox();
 
-    bp.setTop(lb);
+    for(int i=0; i<lb.length; i++){
+      vb.getChildren().add(lb[i]);
+    }
+    bp.setCenter(vb);
 
     Scene sc = new Scene(bp, 300, 200);
-
-    sc.addEventHandler(MouseEvent.MOUSE_ENTERED, new SampleEventHandler());
-    sc.addEventHandler(MouseEvent.MOUSE_EXITED, new SampleEventHandler());
 
     stage.setScene(sc);
 
     stage.setTitle("サンプル");
     stage.show();
-  }
-
-  class SampleEventHandler implements EventHandler<MouseEvent>
-  {
-    public void handle(MouseEvent e)
-    {
-      if(e.getEventType() == MouseEvent.MOUSE_ENTERED){
-        lb.setText("いらっしゃいませ。");
-      }
-      else if(e.getEventType() == MouseEvent.MOUSE_EXITED)
-      {
-        lb.setText("ようこそ。");
-      }
-    }
   }
 }

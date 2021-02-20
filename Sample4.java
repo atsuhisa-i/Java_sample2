@@ -3,12 +3,12 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.event.*;
+import javafx.geometry.*;
 
 public class Sample4 extends Application
 {
-  private Label lb;
-  private Button bt;
+  private Button[] bt = new Button[10];
+  private Label[] lb = new Label[5];
 
   public static void main(String[] args)
   {
@@ -16,15 +16,29 @@ public class Sample4 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    lb = new Label("いらっしゃいませ。");
-    bt = new Button("購入");
+    for(int i=0; i<bt.length; i++){
+      bt[i] = new Button(Integer.toString(i));
+    }
+    for(int i=0; i<lb.length; i++){
+      lb[i] = new Label(Integer.toString(i));
+    }
 
     BorderPane bp = new BorderPane();
+    HBox hb = new HBox();
+    VBox vb = new VBox();
 
-    bp.setTop(lb);
-    bp.setCenter(bt);
+    for(int i=0; i<bt.length; i++){
+      hb.getChildren().add(bt[i]);
+    }
+    for(int i=0; i<lb.length; i++){
+      vb.getChildren().add(lb[i]);
+    }
 
-    bt.setOnAction(new SampleEventHandler());
+    hb.setAlignment(Pos.CENTER);
+    vb.setAlignment(Pos.CENTER);
+
+    bp.setTop(hb);
+    bp.setCenter(vb);
 
     Scene sc = new Scene(bp, 300, 200);
 
@@ -32,13 +46,5 @@ public class Sample4 extends Application
 
     stage.setTitle("サンプル");
     stage.show();
-  }
-
-  class SampleEventHandler implements EventHandler<ActionEvent>
-  {
-    public void handle(ActionEvent e)
-    {
-      lb.setText("ご購入ありがとうございます。");
-    }
   }
 }
