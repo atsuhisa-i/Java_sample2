@@ -1,14 +1,19 @@
+import java.time.*;
+import java.time.format.*;
 import javafx.application.*;
 import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.geometry.*;
+import javafx.scene.control.cell.*;
+import javafx.collections.*;
+import javafx.beans.value.*;
+import javafx.beans.property.*;
 
 public class Sample4 extends Application
 {
-  private Button[] bt = new Button[10];
-  private Label[] lb = new Label[5];
+  private Label lb;
+  private TableView<RowData> tv;
 
   public static void main(String[] args)
   {
@@ -16,29 +21,28 @@ public class Sample4 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    for(int i=0; i<bt.length; i++){
-      bt[i] = new Button(Integer.toString(i));
+    lb = new Label("いらっしゃいませ。");
+    tv = new TableView<RowData>();
+
+    TableColumn<RowData, String> tc1 = new TableColumn<RowData, String>("日付");
+    TableColumn<RowData, String> tc2 = new TableColumn<RowData, String>("営業");
+
+    tc1.setCellValueFactory(new PropertyValueFactory<RowData, String>("date"));
+    tc2.setCellValueFactory(new PropertyValueFactory<RowData, String>("business"));
+    ObservableList<RowData> ol = FXCollections.observableArrayList();
+    for(int i=0; i<50; i++){
+      ol.add(new RowData(i));
     }
-    for(int i=0; i<lb.length; i++){
-      lb[i] = new Label(Integer.toString(i));
-    }
+
+    tv.getColumns().add(tc1);
+    tv.getColumns().add(tc2);
+
+    tv.setItems(ol);
 
     BorderPane bp = new BorderPane();
-    HBox hb = new HBox();
-    VBox vb = new VBox();
 
-    for(int i=0; i<bt.length; i++){
-      hb.getChildren().add(bt[i]);
-    }
-    for(int i=0; i<lb.length; i++){
-      vb.getChildren().add(lb[i]);
-    }
-
-    hb.setAlignment(Pos.CENTER);
-    vb.setAlignment(Pos.CENTER);
-
-    bp.setTop(hb);
-    bp.setCenter(vb);
+    bp.setTop(lb);
+    bp.setCenter(tv);
 
     Scene sc = new Scene(bp, 300, 200);
 
@@ -46,5 +50,26 @@ public class Sample4 extends Application
 
     stage.setTitle("サンプル");
     stage.show();
+  }
+
+  public class RowData
+  {
+    private final SimpleStringProperty date;
+    private final SimpleStringProperty business;
+
+    public RowData(int row)
+    {
+      DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+      LocalDateTime t = LocalDateTime.now();
+      LocalDateTime d = t.plusDays(row);
+
+      this.date = new SimpleStringProperty(df.format(d));
+      if(d.getDayOfWeek() == DayOfWeek.SUNDAY)
+        this.business = new SimpleStringProperty("休業日です。");
+      else
+        this.business = new SimpleStringProperty("営業日です。");
+    }
+    public StringProperty dateProperty(){return date;}
+    public StringProperty businessProperty(){return business;}
   }
 }
