@@ -3,11 +3,16 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.geometry.*;
+import javafx.scene.input.*;
+import javafx.event.*;
+import javafx.collections.*;
+import javafx.beans.value.*;
 
 public class Sample1 extends Application
 {
-  private Button[] bt = new Button[5];
+  private Label lb;
+  private ComboBox<String> cb;
+  private ObservableList<String> ol;
 
   public static void main(String[] args)
   {
@@ -15,23 +20,19 @@ public class Sample1 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    bt[0] = new Button("Top");
-    bt[1] = new Button("Bottom");
-    bt[2] = new Button("Center");
-    bt[3] = new Button("Left");
-    bt[4] = new Button("Right");
+    lb = new Label("いらっしゃいませ。");
+    cb = new ComboBox<String>();
+
+    ObservableList<String> ol =
+      FXCollections.observableArrayList("乗用車", "トラック", "オープンカー", "タクシー", "スポーツカー", "ミニカー");
+    cb.setItems(ol);
 
     BorderPane bp = new BorderPane();
 
-    bp.setTop(bt[0]);
-    bp.setBottom(bt[1]);
-    bp.setCenter(bt[2]);
-    bp.setLeft(bt[3]);
-    bp.setRight(bt[4]);
+    bp.setTop(lb);
+    bp.setCenter(cb);
 
-    for(int i=0; i<bt.length; i++){
-      bp.setAlignment(bt[i], Pos.CENTER);
-    }
+    cb.setOnAction(new SampleEventHandler());
 
     Scene sc = new Scene(bp, 300, 200);
 
@@ -39,5 +40,15 @@ public class Sample1 extends Application
 
     stage.setTitle("サンプル");
     stage.show();
+  }
+
+  class SampleEventHandler implements EventHandler<ActionEvent>
+  {
+    public void handle(ActionEvent e)
+    {
+      ComboBox tmp = (ComboBox) e.getSource();
+      String str = tmp.getValue().toString();
+      lb.setText(str + "ですね。");
+    }
   }
 }
