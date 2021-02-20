@@ -3,12 +3,16 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.*;
-import javafx.scene.text.*;
+import javafx.scene.input.*;
+import javafx.event.*;
+import javafx.scene.image.*;
 
 public class Sample6 extends Application
 {
-  private Label[] lb = new Label[3];
+  private Label lb;
+  private Button[] bt = new Button[3];
+  private ToolBar tb;
+  private Image im;
 
   public static void main(String[] args)
   {
@@ -16,25 +20,29 @@ public class Sample6 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    for(int i=0; i<lb.length; i++){
-      lb[i] = new Label("This is a car.");
+    lb = new Label("いらっしゃいませ。");
+    tb = new ToolBar();
+    im = new Image(getClass().getResourceAsStream("car.jpg"));
+
+    for(int i=0; i<bt.length; i++){
+      bt[i] = new Button();
+      bt[i].setGraphic(new ImageView(im));
     }
 
-    lb[0].setTextFill(Color.BLACK);
-    lb[1].setTextFill(Color.BLUE);
-    lb[2].setTextFill(Color.RED);
+    for(int i=0; i<bt.length; i++){
+      bt[i].setTooltip(new Tooltip((i+1) + "号車"));
+    }
 
-    lb[0].setFont(Font.font("Serif", 12));
-    lb[1].setFont(Font.font("SansSerif", FontPosture.ITALIC, 14));
-    lb[2].setFont(Font.font("SansSerif", FontWeight.BLACK, 16));
+    tb.getItems().addAll(bt[0], bt[1], new Separator(), bt[2]);
 
     BorderPane bp = new BorderPane();
-    VBox vb = new VBox();
 
-    for(int i=0; i<lb.length; i++){
-      vb.getChildren().add(lb[i]);
+    bp.setTop(tb);
+    bp.setCenter(lb);
+
+    for(int i=0; i<bt.length; i++){
+      bt[i].setOnAction(new SampleEventHandler());
     }
-    bp.setCenter(vb);
 
     Scene sc = new Scene(bp, 300, 200);
 
@@ -42,5 +50,22 @@ public class Sample6 extends Application
 
     stage.setTitle("サンプル");
     stage.show();
+  }
+
+  class SampleEventHandler implements EventHandler<ActionEvent>
+  {
+    public void handle(ActionEvent e)
+    {
+      int num = 0;
+      Button tmp = (Button) e.getSource();
+
+      if(tmp == bt[0])
+        num = 1;
+      else if(tmp == bt[1])
+        num = 2;
+      else if(tmp == bt[2])
+        num = 3;
+      lb.setText(num + "号車ですね。");
+    }
   }
 }
