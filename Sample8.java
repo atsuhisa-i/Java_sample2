@@ -5,13 +5,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import javafx.event.*;
-import javafx.scene.image.*;
+import java.util.*;
 
 public class Sample8 extends Application
 {
   private Label lb;
   private Button bt;
-  private Image im;
 
   public static void main(String[] args)
   {
@@ -21,9 +20,6 @@ public class Sample8 extends Application
   {
     lb = new Label("いらっしゃいませ。");
     bt = new Button("購入");
-
-    im = new Image(getClass().getResourceAsStream("時計.jpg"));
-    bt.setGraphic(new ImageView(im));
 
     BorderPane bp = new BorderPane();
 
@@ -44,8 +40,17 @@ public class Sample8 extends Application
   {
     public void handle(ActionEvent e)
     {
-      lb.setText("ご購入ありがとうございます。");
-      bt.setDisable(true);
+      Alert al1 = new Alert(Alert.AlertType.CONFIRMATION);
+      al1.setTitle("確認");
+      al1.getDialogPane().setHeaderText("本当に購入しますか？");
+      Optional<ButtonType> res = al1.showAndWait();
+
+      if(res.get() == ButtonType.OK){
+        Alert al2 = new Alert(Alert.AlertType.INFORMATION);
+        al2.setTitle("購入");
+        al2.getDialogPane().setHeaderText("ご購入ありがとうございました。");
+        al2.show();
+      }
     }
   }
 }
