@@ -3,14 +3,13 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.*;
-import javafx.scene.text.*;
-import javafx.scene.image.*;
+import javafx.scene.input.*;
+import javafx.event.*;
 
 public class Sample7 extends Application
 {
-  private Label[] lb = new Label[3];
-  private Image im;
+  private Label lb;
+  private Button bt;
 
   public static void main(String[] args)
   {
@@ -18,23 +17,15 @@ public class Sample7 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    for(int i=0; i<lb.length; i++){
-      lb[i] = new Label("車" + i + "はいかがですか？");
-    }
-    im = new Image(getClass().getResourceAsStream("時計.jpg"));
-
-    lb[0].setGraphic(new ImageView(im));
-    lb[1].setGraphic(new ImageView(im));
-    lb[1].setContentDisplay(ContentDisplay.RIGHT);
-    lb[2].setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+    lb = new Label("いらっしゃいませ。");
+    bt = new Button("購入");
 
     BorderPane bp = new BorderPane();
-    VBox vb = new VBox();
 
-    for(int i=0; i<lb.length; i++){
-      vb.getChildren().add(lb[i]);
-    }
-    bp.setCenter(vb);
+    bp.setTop(lb);
+    bp.setCenter(bt);
+
+    bt.setOnAction(new SampleEventHandler());
 
     Scene sc = new Scene(bp, 300, 200);
 
@@ -42,5 +33,16 @@ public class Sample7 extends Application
 
     stage.setTitle("サンプル");
     stage.show();
+  }
+
+  class SampleEventHandler implements EventHandler<ActionEvent>
+  {
+    public void handle(ActionEvent e)
+    {
+      Alert al = new Alert(Alert.AlertType.INFORMATION);
+      al.setTitle("購入");
+      al.getDialogPane().setHeaderText("ご購入ありがとうございました。");
+      al.show();
+    }
   }
 }

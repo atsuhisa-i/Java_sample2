@@ -3,10 +3,15 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.input.*;
+import javafx.event.*;
+import javafx.collections.*;
+import javafx.beans.value.*;
 
 public class Sample2 extends Application
 {
-  private Button[] bt = new Button[10];
+  private Label lb;
+  private ListView<String> lv;
 
   public static void main(String[] args)
   {
@@ -14,21 +19,33 @@ public class Sample2 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    for(int i=0; i<bt.length; i++){
-      bt[i] = new Button(Integer.toString(i));
-    }
+    lb = new Label("いらっしゃいませ。");
+    lv = new ListView<String>();
 
-    FlowPane fp = new FlowPane();
+    ObservableList<String> ol =
+      FXCollections.observableArrayList("乗用車", "トラック", "オープンカー", "タクシー", "スポーツカー", "ミニカー", "自転車", "三輪車", "バイク", "飛行機", "ヘリコプター", "ロケット");
+    lv.setItems(ol);
 
-    for(int i=0; i<bt.length; i++){
-      fp.getChildren().add(bt[i]);
-    }
+    BorderPane bp = new BorderPane();
 
-    Scene sc = new Scene(fp, 300, 100);
+    bp.setTop(lb);
+    bp.setCenter(lv);
+
+    lv.getSelectionModel().selectedItemProperty().addListener(new SampleChangeListener());
+
+    Scene sc = new Scene(bp, 300, 200);
 
     stage.setScene(sc);
 
     stage.setTitle("サンプル");
     stage.show();
+  }
+
+  class SampleChangeListener implements ChangeListener<String>
+  {
+    public void changed(ObservableValue ob, String bs, String as)
+    {
+      lb.setText(as + "ですね。");
+    }
   }
 }

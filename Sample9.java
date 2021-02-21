@@ -3,14 +3,12 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.input.*;
-import javafx.event.*;
-import javafx.geometry.*;
+import javafx.scene.paint.*;
+import javafx.scene.canvas.*;
 
 public class Sample9 extends Application
 {
-  private Label lb;
-  private CheckBox ch1, ch2;
+  private Canvas cv;
 
   public static void main(String[] args)
   {
@@ -18,22 +16,25 @@ public class Sample9 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    lb = new Label("いらっしゃいませ。");
-    ch1 = new CheckBox("車");
-    ch2 = new CheckBox("トラック");
+    cv = new Canvas(300, 200);
+
+    GraphicsContext gc = cv.getGraphicsContext2D();
+
+    for(int i=0; i<100; i++){
+      int r = (int) (Math.random() * 256);
+      int g = (int) (Math.random() * 256);
+      int b = (int) (Math.random() * 256);
+
+      double x = Math.random() * 300;
+      double y = Math.random() * 200;
+
+      gc.setFill(Color.rgb(r, g, b, 1.0));
+      gc.fillOval(x, y, 10, 10);
+    }
 
     BorderPane bp = new BorderPane();
-    HBox hb = new HBox();
 
-    hb.getChildren().add(ch1);
-    hb.getChildren().add(ch2);
-    hb.setAlignment(Pos.CENTER);
-
-    bp.setTop(lb);
-    bp.setCenter(hb);
-
-    ch1.setOnAction(new SampleEventHandler());
-    ch2.setOnAction(new SampleEventHandler());
+    bp.setCenter(cv);
 
     Scene sc = new Scene(bp, 300, 200);
 
@@ -41,19 +42,5 @@ public class Sample9 extends Application
 
     stage.setTitle("サンプル");
     stage.show();
-  }
-
-  class SampleEventHandler implements EventHandler<ActionEvent>
-  {
-    public void handle(ActionEvent e)
-    {
-      CheckBox tmp = (CheckBox) e.getSource();
-      if(tmp.isSelected() == true){
-        lb.setText(tmp.getText() + "を選びました。");
-      }
-      else if(tmp.isSelected() == false){
-        lb.setText(tmp.getText() + "をやめました。");
-      }
-    }
   }
 }
