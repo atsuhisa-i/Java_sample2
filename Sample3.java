@@ -1,84 +1,41 @@
-import java.util.*;
-import javafx.application.*;
-import javafx.stage.*;
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.control.cell.*;
-import javafx.collections.*;
-import javafx.beans.value.*;
-import javafx.beans.property.*;
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
-public class Sample3 extends Application
+public class Sample3 extends HttpServlet
 {
-  private Label lb;
-  private TableView<RowData> tv;
-
-  public static void main(String[] args)
+  public void doGet(HttpServletRequest request,
+    HttpServletResponse response)throws ServletException
   {
-    launch(args);
-  }
-  public void start(Stage stage)throws Exception
-  {
-    lb = new Label("いらっしゃいませ。");
-    tv = new TableView<RowData>();
+    try{
+      String carname = request.getParameter("cars");
 
-    TableColumn<RowData, String> tc1 = 
-      new TableColumn<RowData, String>("車名");
-    TableColumn<RowData, String> tc2 = 
-      new TableColumn<RowData, String>("価格");
-    TableColumn<RowData, String> tc3 = 
-      new TableColumn<RowData, String>("月日");
-    
-    tc1.setCellValueFactory(new PropertyValueFactory<RowData, String>("name"));
-    tc2.setCellValueFactory(new PropertyValueFactory<RowData, String>("price"));
-    tc3.setCellValueFactory(new PropertyValueFactory<RowData, String>("date"));
+      response.setContentType("text/html; charset=UTF-8");
 
-    ObservableList<RowData> ol = FXCollections.observableArrayList();
-    ol.add(new RowData("乗用車", 1200, "10-01"));
-    ol.add(new RowData("トラック", 2400, "10-05"));
-    ol.add(new RowData("オープンカー", 3600, "10-06"));
-    ol.add(new RowData("タクシー", 2500, "10-10"));
-    ol.add(new RowData("スポーツカー", 2600, "10-11"));
-    ol.add(new RowData("ミニカー", 300, "10-12"));
-    ol.add(new RowData("自転車", 800, "10-15"));
-    ol.add(new RowData("三輪車", 600, "10-18"));
-    ol.add(new RowData("飛行機", 15000, "10-19"));
-    ol.add(new RowData("乗用車", 1200, "10-01"));
-    ol.add(new RowData("ヘリコプター", 3500, "10-21"));
-
-    tv.getColumns().add(tc1);
-    tv.getColumns().add(tc2);
-    tv.getColumns().add(tc3);
-
-    tv.setItems(ol);
-
-    BorderPane bp = new BorderPane();
-
-    bp.setTop(lb);
-    bp.setCenter(tv);
-
-    Scene sc = new Scene(bp, 300, 200);
-
-    stage.setScene(sc);
-
-    stage.setTitle("サンプル");
-    stage.show();
-  }
-  public class RowData
-  {
-    private final SimpleStringProperty name;
-    private final SimpleIntegerProperty price;
-    private final SimpleStringProperty date;
-
-    public RowData(String n, Integer p, String d)
-    {
-      this.name = new SimpleStringProperty(n);
-      this.price = new SimpleIntegerProperty(p);
-      this.date = new SimpleStringProperty(d);
+      PrintWriter pw = response.getWriter();
+      if(carname.length() !=0){
+        pw.println("<!DOCTYPE html><html>\n"
+        + "<head><title>"
+        + carname + "</title></head>\n"
+        + "<body><div style=\"text-align: center;\">\n"
+        + "<h2>\n" + carname + "</h2>\n"
+        + carname
+        + "のお買い上げありがとうございました。<br/>\n"
+        + "</div></body>\n"
+        + "</html>\n");
+      }
+      else{
+        pw.println("<!DOCTYPE html><html>\n"
+        + "<head><title>エラー</title></head>\n"
+        + "<body><div style=\"text-align: center;\">\n"
+        + "<h2>エラー</h2>\n"
+        + "入力して下さい。<br/>\n"
+        + "</div></body>\n"
+        + "</html>\n");
+      }
     }
-    public StringProperty nameProperty(){return name;}
-    public IntegerProperty priceProperty(){return price;}
-    public StringProperty dateProperty(){return date;}
+    catch(Exception e){
+      e.printStackTrace();
+    }
   }
 }
