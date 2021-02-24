@@ -1,75 +1,56 @@
-import java.time.*;
-import java.time.format.*;
-import javafx.application.*;
-import javafx.stage.*;
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.control.cell.*;
-import javafx.collections.*;
-import javafx.beans.value.*;
-import javafx.beans.property.*;
+import java.util.*;
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
-public class Sample4 extends Application
+public class Sample4 extends HttpServlet
 {
-  private Label lb;
-  private TableView<RowData> tv;
-
-  public static void main(String[] args)
+  public void doGet(HttpServletRequest request,
+    HttpServletResponse response)throws ServletException
   {
-    launch(args);
-  }
-  public void start(Stage stage)throws Exception
-  {
-    lb = new Label("いらっしゃいませ。");
-    tv = new TableView<RowData>();
+    try{
+      HttpSession hs = request.getSession(true);
+      Integer cn = (Integer) hs.getAttribute("count");
+      Date dt = (Date) hs.getAttribute("date");
 
-    TableColumn<RowData, String> tc1 = new TableColumn<RowData, String>("日付");
-    TableColumn<RowData, String> tc2 = new TableColumn<RowData, String>("営業");
+      String str1, str2;
 
-    tc1.setCellValueFactory(new PropertyValueFactory<RowData, String>("date"));
-    tc2.setCellValueFactory(new PropertyValueFactory<RowData, String>("business"));
-    ObservableList<RowData> ol = FXCollections.observableArrayList();
-    for(int i=0; i<50; i++){
-      ol.add(new RowData(i));
+      if(cn == null){
+        cn = Integer.valueOf(1);
+        dt = new Date();
+        str1 = "初めてのお越しですね。";
+        str2 = "";
+      }
+      else{
+        cn = Integer.valueOf(cn.intValue() + 1);
+        str1 = cn + "回目のお越しですね。";
+        str2 = "(前回：" + dt + ")";
+        dt = new Date();
+      }
+
+      hs.setAttribute("count", cn);
+      hs.setAttribute("date", dt);
+
+      response.setContentType("text/html; charset=UTF-8");
+
+      PrintWriter pw = response.getWriter();
+      pw.println("<!DOCTYPE html><html>\n"
+        + "<head><title>サンプル</title></head>\n"
+        + "<body><div style=\"text-align: center;\">\n"
+        + "<h2>ようこそ</h2>"
+        + "<hr/>\n"
+        + str1 + "<br/>\n"
+        + str2 + "<br/>\n"
+        + "お選びください。<br/>\n"
+        + "<br/>\n"
+        + "<a href=\"../car1.html\">乗用車</a><br/>\n"
+        + "<a href=\"../car2.html\">トラック</a><br/>\n"
+        + "<a href=\"../car3.html\">オープンカー</a><br/>\n"
+        + "</div></body>\n"
+        + "</html>\n");
     }
-
-    tv.getColumns().add(tc1);
-    tv.getColumns().add(tc2);
-
-    tv.setItems(ol);
-
-    BorderPane bp = new BorderPane();
-
-    bp.setTop(lb);
-    bp.setCenter(tv);
-
-    Scene sc = new Scene(bp, 300, 200);
-
-    stage.setScene(sc);
-
-    stage.setTitle("サンプル");
-    stage.show();
-  }
-
-  public class RowData
-  {
-    private final SimpleStringProperty date;
-    private final SimpleStringProperty business;
-
-    public RowData(int row)
-    {
-      DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-      LocalDateTime t = LocalDateTime.now();
-      LocalDateTime d = t.plusDays(row);
-
-      this.date = new SimpleStringProperty(df.format(d));
-      if(d.getDayOfWeek() == DayOfWeek.SUNDAY)
-        this.business = new SimpleStringProperty("休業日です。");
-      else
-        this.business = new SimpleStringProperty("営業日です。");
+    catch(Exception e){
+      e.printStackTrace();
     }
-    public StringProperty dateProperty(){return date;}
-    public StringProperty businessProperty(){return business;}
   }
 }
