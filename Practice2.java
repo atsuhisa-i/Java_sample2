@@ -1,48 +1,38 @@
-import javafx.application.*;
-import javafx.stage.*;
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.input.*;
-import javafx.event.*;
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
-public class Practice2 extends Application
+public class Practice2 extends HttpServlet
 {
-  private Label lb;
-  private Button bt;
-
-  public static void main(String[] args)
+  public void doGet(HttpServletRequest request,
+    HttpServletResponse response)throws ServletException
   {
-    launch(args);
-  }
-  public void start(Stage stage)throws Exception
-  {
-    lb = new Label("いらっしゃいませ。");
-    bt = new Button("購入");
+    try{
+      String carname = request.getParameter("cars");
 
-    BorderPane bp = new BorderPane();
+      ServletContext sc = getServletContext();
 
-    bp.setTop(lb);
-    bp.setCenter(bt);
+      response.setContentType("text/html; charset=UTF-8");
 
-    bt.setOnAction(new SampleEventHandler());
-
-    Scene sc = new Scene(bp, 300, 200);
-
-    stage.setScene(sc);
-
-    stage.setTitle("サンプル");
-    stage.show();
-  }
-
-  class SampleEventHandler implements EventHandler<ActionEvent>
-  {
-    public void handle(ActionEvent e)
-    {
-      Alert al = new Alert(Alert.AlertType.INFORMATION);
-      al.setTitle("購入");
-      al.getDialogPane().setHeaderText("大変ありがとうございました。");
-      al.show();
+      if(carname.length() !=0){
+        PrintWriter pw = response.getWriter();
+        pw.println("<!DOCTYPE html><html>\n"
+        + "<head><title>\n" + carname
+        + "</title></head>\n"
+        + "<body><div style=\"text-align: center;\">\n"
+        + "<h2>\n" + carname
+        + "</h2>\n" + carname
+        + "のお買い上げありがとうございました。<br/>\n"
+        + "</div></body>\n"
+        + "</html>\n");
+      }
+      else{
+        sc.getRequestDispatcher("/error.html")
+        .forward(request, response);
+      }
+    }
+    catch(Exception e){
+      e.printStackTrace();
     }
   }
 }

@@ -1,54 +1,34 @@
-import javafx.application.*;
-import javafx.stage.*;
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.input.*;
-import javafx.event.*;
-import javafx.collections.*;
-import javafx.beans.value.*;
+import java.util.*;
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
-public class Sample1 extends Application
+public class Sample1 extends HttpServlet
 {
-  private Label lb;
-  private ComboBox<String> cb;
-  private ObservableList<String> ol;
-
-  public static void main(String[] args)
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+  throws ServletException
   {
-    launch(args);
-  }
-  public void start(Stage stage)throws Exception
-  {
-    lb = new Label("いらっしゃいませ。");
-    cb = new ComboBox<String>();
+    try{
+      response.setContentType("text/html; charset=UTF-8");
 
-    ObservableList<String> ol =
-      FXCollections.observableArrayList("乗用車", "トラック", "オープンカー", "タクシー", "スポーツカー", "ミニカー");
-    cb.setItems(ol);
+      Date dt = new Date();
 
-    BorderPane bp = new BorderPane();
-
-    bp.setTop(lb);
-    bp.setCenter(cb);
-
-    cb.setOnAction(new SampleEventHandler());
-
-    Scene sc = new Scene(bp, 300, 200);
-
-    stage.setScene(sc);
-
-    stage.setTitle("サンプル");
-    stage.show();
-  }
-
-  class SampleEventHandler implements EventHandler<ActionEvent>
-  {
-    public void handle(ActionEvent e)
-    {
-      ComboBox tmp = (ComboBox) e.getSource();
-      String str = tmp.getValue().toString();
-      lb.setText(str + "ですね。");
+      PrintWriter pw = response.getWriter();
+      pw.println("<!DOCTYPE html><html>\n" 
+        + "<head><title>サンプル</title></head>\n" 
+        + "<body><div style=\"text-align: center;\">\n" 
+        + "<h2>ようこそ</h2>" 
+        + "<hr/>\n" 
+        + "今" + dt + "です。<br/>\n"
+        + "お選びください。<br/>\n"
+        + "<br/>\n"
+        + "<a href=\"../car1.html\">乗用車</a><br/>\n"
+        + "<a href=\"../car2.html\">トラック</a><br/>\n"
+        + "<a href=\"../car3.html\">オープンカー</a><br/>\n"
+        + "</div></body>\n");
+    }
+    catch(Exception e){
+      e.printStackTrace();
     }
   }
 }
