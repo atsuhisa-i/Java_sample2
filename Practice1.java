@@ -1,61 +1,38 @@
-import javafx.application.*;
-import javafx.stage.*;
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.input.*;
-import javafx.event.*;
-import javafx.collections.*;
-import javafx.beans.value.*;
-import java.time.*;
-import java.time.format.*;
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
-public class Practice1 extends Application
+public class Practice1 extends HttpServlet
 {
-  private Label lb;
-  private ListView<String> lv;
-
-  public static void main(String[] args)
+  public void doGet(HttpServletRequest request,
+    HttpServletResponse response)throws ServletException
   {
-    launch(args);
-  }
-  public void start(Stage stage)throws Exception
-  {
-    lb = new Label("いらっしゃいませ。");
-    lv = new ListView<String>();
+    try{
+      String personname = request.getParameter("person");
 
-    ObservableList<String> ol =
-      FXCollections.observableArrayList();
-    
-    DateTimeFormatter df = 
-      DateTimeFormatter.ofPattern("yyyy/MM/dd");
-    LocalDateTime t = LocalDateTime.now();
+      ServletContext sc = getServletContext();
 
-    for(int i=0; i<50; i++){
-      ol.add(df.format(t.plusDays(i)));
+      response.setContentType("text/html; charset=UTF-8");
+
+      if(personname.length() !=0){
+        PrintWriter pw = response.getWriter();
+        pw.println("<!DOCTYPE html><html>\n"
+        + "<head><title>\n" + personname 
+        + "</title></head>\n"
+        + "<body><div style=\"text-align: center;\">\n"
+        + "<h2>\nようこそ"
+        + "</h2>\n" + personname
+        + "さん、いらっしゃいませ。<br/>\n"
+        + "</div></body>\n"
+        + "</html>\n");
+      }
+      else{
+        sc.getRequestDispatcher("/error.html")
+          .forward(request, response);
+      }
     }
-    lv.setItems(ol);
-
-    BorderPane bp = new BorderPane();
-
-    bp.setTop(lb);
-    bp.setCenter(lv);
-
-    lv.getSelectionModel().selectedItemProperty().addListener(new SampleChangeListener());
-
-    Scene sc = new Scene(bp, 300, 200);
-
-    stage.setScene(sc);
-
-    stage.setTitle("サンプル");
-    stage.show();
-  }
-
-  class SampleChangeListener implements ChangeListener<String>
-  {
-    public void changed(ObservableValue ob, String bs, String as)
-    {
-      lb.setText(as + "ですね。");
+    catch(Exception e){
+      e.printStackTrace();
     }
   }
 }
