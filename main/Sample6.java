@@ -1,3 +1,5 @@
+package main;
+import mybeans.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -9,10 +11,16 @@ public class Sample6 extends HttpServlet
     try{
       String carname = request.getParameter("cars");
 
+      CarBean cb = new CarBean();
+      cb.setCarname(carname);
+      cb.makeCardata();
+
+      request.setAttribute("cb", cb);
+
       ServletContext sc = getServletContext();
 
       if(carname.length() !=0){
-        sc.getRequestDispatcher("/servlet/Sample2").forward(request, response);
+        sc.getRequestDispatcher("/Sample6.jsp").forward(request, response);
       }
       else{
         sc.getRequestDispatcher("/error.html").forward(request, response);

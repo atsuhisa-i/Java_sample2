@@ -1,3 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<jsp:useBean id="cb" class="mybeans.CarBean" scope="request"/>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,15 +11,9 @@
 </head>
 <body>
   <div style="text-align: center;">
-  <img src="car.gif"/><br/>
-  <h2>ようこそ</h2>
-  <hr/>
-  お選びください。<br/>
-  <br/>
-  <form action="http://localhost:8080/YJKSample07/servlet/Sample6" method="GET">
-  <input type="text" name="cars"/>
-  <input type="submit" value="送信"/>
-  </form>
+    <h2>御礼</h2>
+    <jsp:getProperty name="cb" property="cardata"/>
+    のお買い上げありがとうございました。<br/>
   </div>
 </body>
 </html>
