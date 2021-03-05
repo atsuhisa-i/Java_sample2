@@ -1,3 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="java.util.*" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,12 +14,12 @@
     <img src="car.gif"/><br/>
     <h2>ようこそ</h2>
     <hr/>
+    今<%= new Date() %>です。<br/>
     お選びください。<br/>
     <br/>
-    <form action="http://localhost:8080/YJKSample07/Sample3.jsp" method="GET">
-    <input type="text" name="cars"/>
-    <input type="submit" value="送信"/>
-    </form>
-    </div>
+    <a href="car1.html">乗用車</a><br/>
+    <a href="car2.html">トラック</a><br/>
+    <a href="car3.html">オープンカー</a><br/>
+  </div>
 </body>
 </html>

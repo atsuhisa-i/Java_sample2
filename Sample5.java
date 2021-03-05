@@ -12,7 +12,7 @@ public class Sample5 extends HttpServlet
       ServletContext sc = getServletContext();
 
       if(carname.length() !=0){
-        sc.getRequestDispatcher("/thanks.html").forward(request, response);
+        sc.getRequestDispatcher("/Sample5.jsp").forward(request, response);
       }
       else{
         sc.getRequestDispatcher("/error.html").forward(request, response);
