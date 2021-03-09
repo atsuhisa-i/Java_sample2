@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Tue Mar 09 09:17:47 JST 2021:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0178-1458-cc84-000007a99f68 
+on database directory /Users/atsuhisaiino/Desktop/Java_sample2/cardb with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@55054057 
+Loaded from file:/Library/Java/Extensions/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=15.0.1+9-18
+user.dir=/Users/atsuhisaiino/Desktop/Java_sample2
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.15.7
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

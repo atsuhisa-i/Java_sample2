@@ -1,31 +1,53 @@
-import java.util.*;
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.sql.*;
 
-public class Sample1 extends HttpServlet
+public class Sample1
 {
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-  throws ServletException
+  public static void main(String[] args)
   {
     try{
-      response.setContentType("text/html; charset=UTF-8");
+      String url = "jdbc:derby:cardb;create=true";
+      String usr = "";
+      String pw = "";
 
-      Date dt = new Date();
+      Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 
-      PrintWriter pw = response.getWriter();
-      pw.println("<!DOCTYPE html><html>\n" 
-        + "<head><title>サンプル</title></head>\n" 
-        + "<body><div style=\"text-align: center;\">\n" 
-        + "<h2>ようこそ</h2>" 
-        + "<hr/>\n" 
-        + "今" + dt + "です。<br/>\n"
-        + "お選びください。<br/>\n"
-        + "<br/>\n"
-        + "<a href=\"../car1.html\">乗用車</a><br/>\n"
-        + "<a href=\"../car2.html\">トラック</a><br/>\n"
-        + "<a href=\"../car3.html\">オープンカー</a><br/>\n"
-        + "</div></body>\n");
+      Connection cn = DriverManager.getConnection(url, usr, pw);
+
+      DatabaseMetaData dm = cn.getMetaData();
+      ResultSet tb = dm.getTables(null, null, "車表", null);
+
+      Statement st = cn.createStatement();
+
+      String qry1 = "CREATE TABLE 車表(番号 int, 名前 varchar(50))";
+
+      String[] qry2 = {
+        "INSERT INTO 車表 VALUES (2, '乗用車')",
+        "INSERT INTO 車表 VALUES (3, 'オープンカー')",
+        "INSERT INTO 車表 VALUES (4, 'トラック')"};
+      String qry3 = "SELECT * FROM 車表";
+
+      if(!tb.next()){
+        st.executeUpdate(qry1);
+        for(int i=0; i<qry2.length; i++){
+          st.executeUpdate(qry2[i]);
+        }
+      }
+
+      ResultSet rs = st.executeQuery(qry3);
+
+      ResultSetMetaData rm = rs.getMetaData();
+      int cnum = rm.getColumnCount();
+      while(rs.next()){
+        for(int i=1; i<=cnum; i++){
+          System.out.print(rm.getColumnName(i) + ":" +
+            rs.getObject(i) + "  ");
+        }
+        System.out.println("");
+      }
+
+      rs.close();
+      st.close();
+      cn.close();
     }
     catch(Exception e){
       e.printStackTrace();
