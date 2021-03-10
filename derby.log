@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Thu Mar 11 06:18:00 JST 2021:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0178-1e00-eb17-000007a6ca80 
+Thu Mar 11 06:56:57 JST 2021:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0178-1e24-93d2-000007a6b5d8 
 on database directory /Users/atsuhisaiino/Desktop/Java_sample2/fooddb with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@55054057 
 Loaded from file:/Applications/apache-tomcat-9.0.43/lib/derby.jar
 java.vendor=Oracle Corporation

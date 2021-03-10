@@ -1,35 +1,43 @@
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.sql.*;
 
-public class Practice2 extends HttpServlet
+public class Practice2
 {
-  public void doGet(HttpServletRequest request,
-    HttpServletResponse response)throws ServletException
+  public static void main(String args[])
   {
+    if(args.length !=3){
+      System.out.println("パラメータの数が違います。");
+      System.exit(1);
+    }
+
     try{
-      String carname = request.getParameter("cars");
+      String url = "jdbc:derby:fooddb;create=true";
+      String usr = "";
+      String pw = "";
 
-      ServletContext sc = getServletContext();
+      Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 
-      response.setContentType("text/html; charset=UTF-8");
+      Connection cn = DriverManager.getConnection(url, usr, pw);
 
-      if(carname.length() !=0){
-        PrintWriter pw = response.getWriter();
-        pw.println("<!DOCTYPE html><html>\n"
-        + "<head><title>\n" + carname
-        + "</title></head>\n"
-        + "<body><div style=\"text-align: center;\">\n"
-        + "<h2>\n" + carname
-        + "</h2>\n" + carname
-        + "のお買い上げありがとうございました。<br/>\n"
-        + "</div></body>\n"
-        + "</html>\n");
+      Statement st = cn.createStatement();
+      String qry1 = "INSERT INTO 果物表 VALUES (" + args[0] + " , '" + args[1] + "' , '" + args[2] + "')";
+      String qry2 = "SELECT * FROM 果物表";
+
+      st.executeUpdate(qry1);
+      ResultSet rs = st.executeQuery(qry2);
+
+      ResultSetMetaData rm = rs.getMetaData();
+      int cnum = rm.getColumnCount();
+      while(rs.next()){
+        for(int i=1; i<=cnum; i++){
+          System.out.print(rm.getColumnName(i) + ":" + 
+            rs.getObject(i) + "  ");
+        }
+        System.out.println("");
       }
-      else{
-        sc.getRequestDispatcher("/error.html")
-        .forward(request, response);
-      }
+
+      rs.close();
+      st.close();
+      cn.close();
     }
     catch(Exception e){
       e.printStackTrace();
