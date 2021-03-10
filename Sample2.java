@@ -1,27 +1,36 @@
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.sql.*;
 
-public class Sample2 extends HttpServlet
+public class Sample2
 {
-  public void doGet(HttpServletRequest request, 
-    HttpServletResponse response)throws ServletException
+  public static void main(String[] args)
   {
     try{
-      String carname = request.getParameter("cars");
+      String url = "jdbc:derby:cardb;create=true";
+      String usr = "";
+      String pw = "";
 
-      response.setContentType("text/html; charset=UTF-8");
+      Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 
-      PrintWriter pw = response.getWriter();
-      pw.println("<!DOCTYPE html><html>\n"
-        + "<head><title>\n" + carname
-        + "</title></head>\n"
-        + "<body><div style=\"text-align: center;\">\n"
-        + "<h2>\n" + carname
-        + "</h2>\n" + carname
-        + "のお買い上げありがとうございました。<br/>\n"
-        + "</div></body>\n"
-        + "</html>\n");
+      Connection cn = DriverManager.getConnection(url, usr, pw);
+
+      Statement st = cn.createStatement();
+      String qry = "SELECT * FROM 車表 WHERE 番号>=3";
+
+      ResultSet rs = st.executeQuery(qry);
+
+      ResultSetMetaData rm = rs.getMetaData();
+      int cnum = rm.getColumnCount();
+      while(rs.next()){
+        for(int i=1; i<=cnum; i++){
+          System.out.print(rm.getColumnName(i) + ":" + 
+            rs.getObject(i) + "  ");
+        }
+        System.out.println("");
+      }
+
+      rs.close();
+      st.close();
+      cn.close();
     }
     catch(Exception e){
       e.printStackTrace();
