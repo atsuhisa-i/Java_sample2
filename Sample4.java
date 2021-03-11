@@ -1,56 +1,87 @@
-import java.util.*;
 import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javafx.application.*;
+import javafx.stage.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.input.*;
+import javafx.event.*;
 
-public class Sample4 extends HttpServlet
+public class Sample4 extends Application
 {
-  public void doGet(HttpServletRequest request,
-    HttpServletResponse response)throws ServletException
+  private Label lb;
+  private TextArea ta;
+  private Button bt1, bt2;
+
+  public static void main(String[] args)
   {
-    try{
-      HttpSession hs = request.getSession(true);
-      Integer cn = (Integer) hs.getAttribute("count");
-      Date dt = (Date) hs.getAttribute("date");
+    launch(args);
+  }
+  public void start(Stage stage)throws Exception
+  {
+    lb = new Label("ファイルを選択して下さい。");
+    ta = new TextArea();
+    bt1 = new Button("読込");
+    bt2 = new Button("保存");
 
-      String str1, str2;
+    BorderPane bp = new BorderPane();
+    HBox hb = new HBox();
 
-      if(cn == null){
-        cn = Integer.valueOf(1);
-        dt = new Date();
-        str1 = "初めてのお越しですね。";
-        str2 = "";
+    hb.getChildren().add(bt1);
+    hb.getChildren().add(bt2);
+
+    bp.setTop(lb);
+    bp.setCenter(ta);
+    bp.setBottom(hb);
+
+    bt1.setOnAction(new SampleEventHandler());
+    bt2.setOnAction(new SampleEventHandler());
+
+    Scene sc = new Scene(bp, 300, 200);
+
+    stage.setScene(sc);
+
+    stage.setTitle("サンプル");
+    stage.show();
+  }
+
+  class SampleEventHandler implements EventHandler<ActionEvent>
+  {
+    public void handle(ActionEvent e)
+    {
+      FileChooser fc = new FileChooser();
+      if(e.getSource() == bt1){
+        try{
+          File flo = fc.showOpenDialog(new Stage());
+          if(flo != null){
+            BufferedReader br = new BufferedReader(new FileReader(flo));
+            StringBuffer sb = new StringBuffer();
+            String str = null;
+            while((str = br.readLine()) != null){
+              sb.append(str + "\n");
+            }
+            ta.setText(sb.toString());
+            br.close();
+          }
+        }
+        catch(Exception ex){
+          ex.printStackTrace();
+        }
       }
-      else{
-        cn = Integer.valueOf(cn.intValue() + 1);
-        str1 = cn + "回目のお越しですね。";
-        str2 = "(前回：" + dt + ")";
-        dt = new Date();
+      else if(e.getSource() == bt2){
+        try{
+          File fls = fc.showSaveDialog(new Stage());
+          if(fls != null){
+            BufferedWriter bw = new BufferedWriter(new FileWriter(fls));
+            String str = ta.getText();
+            bw.write(str);
+            bw.close();
+          }
+        }
+        catch(Exception ex){
+          ex.printStackTrace();
+        }
       }
-
-      hs.setAttribute("count", cn);
-      hs.setAttribute("date", dt);
-
-      response.setContentType("text/html; charset=UTF-8");
-
-      PrintWriter pw = response.getWriter();
-      pw.println("<!DOCTYPE html><html>\n"
-        + "<head><title>サンプル</title></head>\n"
-        + "<body><div style=\"text-align: center;\">\n"
-        + "<h2>ようこそ</h2>"
-        + "<hr/>\n"
-        + str1 + "<br/>\n"
-        + str2 + "<br/>\n"
-        + "お選びください。<br/>\n"
-        + "<br/>\n"
-        + "<a href=\"../car1.html\">乗用車</a><br/>\n"
-        + "<a href=\"../car2.html\">トラック</a><br/>\n"
-        + "<a href=\"../car3.html\">オープンカー</a><br/>\n"
-        + "</div></body>\n"
-        + "</html>\n");
-    }
-    catch(Exception e){
-      e.printStackTrace();
     }
   }
 }
