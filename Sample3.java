@@ -1,46 +1,64 @@
-import java.sql.*;
+import java.io.*;
+import javafx.application.*;
+import javafx.stage.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.input.*;
+import javafx.event.*;
+import javafx.geometry.*;
 
-public class Sample3
+public class Sample3 extends Application
 {
-  public static void main(String args[])
+  private Label lb1, lb2, lb3, lb4;
+  private Button bt;
+
+  public static void main(String[] args)
   {
-    if(args.length != 2){
-      System.out.println("パラメータの数が違います。");
-      System.exit(1);
-    }
-    
-    try{
-      String url = "jdbc:derby:cardb;create=true";
-      String usr = "";
-      String pw = "";
+    launch(args);
+  }
+  public void start(Stage stage)throws Exception
+  {
+    lb1 = new Label("ファイルを選択して下さい。");
+    lb2 = new Label();
+    lb3 = new Label();
+    lb4 = new Label();
+    bt = new Button("選択");
 
-      Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+    BorderPane bp = new BorderPane();
+    VBox vb = new VBox();
 
-      Connection cn = DriverManager.getConnection(url, usr, pw);
+    vb.getChildren().add(lb1);
+    vb.getChildren().add(lb2);
+    vb.getChildren().add(lb3);
+    vb.getChildren().add(lb4);
 
-      Statement st = cn.createStatement();
-      String qry1 = "INSERT INTO 車表 VALUES (" + args[0] + " , '" + args[1] + "')";
-      String qry2 = "SELECT * FROM 車表";
+    bp.setTop(lb1);
+    bp.setCenter(vb);
+    bp.setBottom(bt);
+    bp.setAlignment(bt, Pos.CENTER);
 
-      st.executeUpdate(qry1);
-      ResultSet rs = st.executeQuery(qry2);
+    bt.setOnAction(new SampleEventHandler());
 
-      ResultSetMetaData rm = rs.getMetaData();
-      int cnum = rm.getColumnCount();
-      while(rs.next()){
-        for(int i=1; i<=cnum; i++){
-          System.out.print(rm.getColumnName(i) + ":" + 
-            rs.getObject(i) + "  ");
-        }
-        System.out.println("");
+    Scene sc = new Scene(bp, 300, 200);
+
+    stage.setScene(sc);
+
+    stage.setTitle("サンプル");
+    stage.show();
+  }
+
+  class SampleEventHandler implements EventHandler<ActionEvent>
+  {
+    public void handle(ActionEvent e)
+    {
+      FileChooser fc = new FileChooser();
+      File fl = fc.showOpenDialog(new Stage());
+      if(fl !=null){
+        lb2.setText("ファイル名は" + fl.getName() + "です。");
+        lb3.setText("絶対パスは" + fl.getAbsolutePath() + "です。");
+        lb4.setText("サイズは" + fl.length() + "バイトです。");
       }
-
-      rs.close();
-      st.close();
-      cn.close();
-    }
-    catch(Exception e){
-      e.printStackTrace();
     }
   }
 }
