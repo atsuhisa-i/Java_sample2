@@ -1,17 +1,17 @@
+import java.io.*;
 import javafx.application.*;
 import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.input.*;
 import javafx.event.*;
-import javafx.geometry.*;
+import javafx.collections.*;
 
 public class Sample10 extends Application
 {
-  private Label lb;
-  private RadioButton rb1, rb2;
-  private ToggleGroup tg;
+  private ListView<String> lv;
+  private Button bt;
+  private ObservableList<String> ol;
 
   public static void main(String[] args)
   {
@@ -19,28 +19,23 @@ public class Sample10 extends Application
   }
   public void start(Stage stage)throws Exception
   {
-    lb = new Label("いらっしゃいませ。");
-    rb1 = new RadioButton("車");
-    rb2 = new RadioButton("トラック");
-    tg = new ToggleGroup();
+    File fl = new File(".");
+    File[] fls = fl.listFiles(new SampleFileFilter());
+    String[] st = new String[fls.length];
+    for(int i=0; i<fls.length; i++){
+      st[i] = fls[i].getName();
+    }
+    ol = FXCollections.observableArrayList(st);
 
-    rb1.setToggleGroup(tg);
-    rb2.setToggleGroup(tg);
-
-    rb1.setSelected(true);
-
+    lv = new ListView<String>(ol);
+    bt = new Button("起動");
+    
     BorderPane bp = new BorderPane();
-    HBox hb = new HBox();
 
-    hb.getChildren().add(rb1);
-    hb.getChildren().add(rb2);
-    hb.setAlignment(Pos.CENTER);
+    bp.setCenter(lv);
+    bp.setBottom(bt);
 
-    bp.setTop(lb);
-    bp.setCenter(hb);
-
-    rb1.setOnAction(new SampleEventHandler());
-    rb2.setOnAction(new SampleEventHandler());
+    bt.setOnAction(new SampleEventHandler());
 
     Scene sc = new Scene(bp, 300, 200);
 
@@ -49,12 +44,29 @@ public class Sample10 extends Application
     stage.setTitle("サンプル");
     stage.show();
   }
+
   class SampleEventHandler implements EventHandler<ActionEvent>
   {
     public void handle(ActionEvent e)
     {
-      RadioButton tmp = (RadioButton) e.getSource();
-      lb.setText(tmp.getText() + "を選びました。");
+      try{
+        java.awt.Desktop dp = java.awt.Desktop.getDesktop();
+        dp.open(new File(lv.getSelectionModel().getSelectedItem()));
+      }
+      catch(IOException ex){
+        System.out.println("起動できませんでした。");
+      }
+    }
+  }
+
+  class SampleFileFilter implements FileFilter
+  {
+    public boolean accept(File f)
+    {
+      if(f.isFile()){
+        return true;
+      }
+      return false;
     }
   }
 }
