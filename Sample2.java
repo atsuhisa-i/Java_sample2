@@ -1,36 +1,28 @@
-import java.sql.*;
+import java.io.*;
 
 public class Sample2
 {
   public static void main(String[] args)
   {
+    if(args.length !=2){
+      System.out.println("パラメータの数が違います。");
+      System.exit(1);
+    }
     try{
-      String url = "jdbc:derby:cardb;create=true";
-      String usr = "";
-      String pw = "";
+      File fl1 = new File(args[0]);
+      File fl2 = new File(args[1]);
 
-      Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+      System.out.println("変更前のファイル名は" + fl1.getName() + "です。");
 
-      Connection cn = DriverManager.getConnection(url, usr, pw);
+      boolean res = fl1.renameTo(fl2);
 
-      Statement st = cn.createStatement();
-      String qry = "SELECT * FROM 車表 WHERE 番号>=3";
-
-      ResultSet rs = st.executeQuery(qry);
-
-      ResultSetMetaData rm = rs.getMetaData();
-      int cnum = rm.getColumnCount();
-      while(rs.next()){
-        for(int i=1; i<=cnum; i++){
-          System.out.print(rm.getColumnName(i) + ":" + 
-            rs.getObject(i) + "  ");
-        }
-        System.out.println("");
+      if(res == true){
+        System.out.println("ファイル名を変更しました。");
+        System.out.println("変更後のファイル名は" + fl2.getName() + "です。");
       }
-
-      rs.close();
-      st.close();
-      cn.close();
+      else{
+        System.out.println("ファイル名を変更できませんでした。");
+      }
     }
     catch(Exception e){
       e.printStackTrace();
