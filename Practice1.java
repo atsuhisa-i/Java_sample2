@@ -1,63 +1,88 @@
-import java.sql.*;
+import java.io.*;
+import javafx.application.*;
+import javafx.stage.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.input.*;
+import javafx.event.*;
 
-public class Practice1
+public class Practice1 extends Application
 {
+  private Label lb;
+  private TextArea ta;
+  private Button bt1, bt2;
+
   public static void main(String[] args)
   {
-    try{
-      String url = "jdbc:derby:fooddb;create=true";
-      String usr = "";
-      String pw = "";
+    launch(args);
+  }
+  public void start(Stage stage)throws Exception
+  {
+    lb = new Label("ファイルを選択して下さい。");
+    ta = new TextArea();
+    bt1 = new Button("読込");
+    bt2 = new Button("保存");
 
-      Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+    BorderPane bp = new BorderPane();
+    HBox hb = new HBox();
 
-      Connection cn = DriverManager.getConnection(url, usr,pw);
+    hb.getChildren().add(bt1);
+    hb.getChildren().add(bt2);
 
-      DatabaseMetaData dm = cn.getMetaData();
-      ResultSet tb = dm.getTables(null, null, "果物表", null);
+    bp.setTop(lb);
+    bp.setCenter(ta);
+    bp.setBottom(hb);
 
-      Statement st = cn.createStatement();
+    bt1.setOnAction(new SampleEventHandler());
+    bt2.setOnAction(new SampleEventHandler());
 
-      String qry1 = "CREATE TABLE 果物表(番号 int, 名前 varchar(50), 取扱店 varchar(50))";
+    Scene sc = new Scene(bp, 300, 200);
 
-      String[] qry2 = {
-        "INSERT INTO 果物表 VALUES (1, 'みかん', '青山商店')",
-        "INSERT INTO 果物表 VALUES (2, 'りんご', '東京市場')",
-        "INSERT INTO 果物表 VALUES (3, 'バナナ', '鈴木貨物')",
-        "INSERT INTO 果物表 VALUES (4, 'イチゴ', '東京市場')",
-        "INSERT INTO 果物表 VALUES (5, 'なし', '青山商店')",
-        "INSERT INTO 果物表 VALUES (6, '栗', '横浜デパート')",
-        "INSERT INTO 果物表 VALUES (7, 'モモ', '横浜デパート')",
-        "INSERT INTO 果物表 VALUES (8, 'びわ', '佐藤商店')",
-        "INSERT INTO 果物表 VALUES (9, '柿', '青山市場')",
-        "INSERT INTO 果物表 VALUES (10, 'スイカ', '東京市場')"};
-      String qry3 = "SELECT * FROM 果物表";
+    stage.setScene(sc);
 
-      if(!tb.next()){
-        st.executeUpdate(qry1);
-        for(int i=0; i<qry2.length; i++){
-          st.executeUpdate(qry2[i]);
+    stage.setTitle("サンプル");
+    stage.show();
+  }
+
+  class SampleEventHandler implements EventHandler<ActionEvent>
+  {
+    public void handle(ActionEvent e)
+    {
+      FileChooser fc = new FileChooser();
+      fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("javaファイル", "*.java"));
+      if(e.getSource() == bt1){
+        try{
+          File flo = fc.showOpenDialog(new Stage());
+          if(flo != null){
+            BufferedReader br = new BufferedReader(new FileReader(flo));
+            StringBuffer sb = new StringBuffer();
+            String str = null;
+            while((str = br.readLine()) != null){
+              sb.append(str + "\n");
+            }
+            ta.setText(sb.toString());
+            br.close();
+          }
+        }
+        catch(Exception ex){
+          ex.printStackTrace();
         }
       }
-
-      ResultSet rs = st.executeQuery(qry3);
-
-      ResultSetMetaData rm = rs.getMetaData();
-      int cnum = rm.getColumnCount();
-      while(rs.next()){
-        for(int i=1; i<=cnum; i++){
-          System.out.print(rm.getColumnName(i) + ":" + 
-            rs.getObject(i) + "  ");
+      else if(e.getSource() == bt2){
+        try{
+          File fls = fc.showSaveDialog(new Stage());
+          if(fls !=null){
+            BufferedWriter bw = new BufferedWriter(new FileWriter(fls));
+            String str = ta.getText();
+            bw.write(str);
+            bw.close();
+          }
         }
-        System.out.println("");
+        catch(Exception ex){
+          ex.printStackTrace();
+        }
       }
-
-      rs.close();
-      st.close();
-      cn.close();
-    }
-    catch(Exception e){
-      e.printStackTrace();
     }
   }
 }
