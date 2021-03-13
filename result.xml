@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><cars>
+  <car country="日本" id="1001">
+    <name>乗用車</name>
+    <price>150</price>
+    <description>5人まで乗車することができます。
+      <em>家族用</em>の車です。</description>
+    <img file="../car1.jpg"/>
+  </car>
+  <car country="日本" id="2001">
+    <name>トラック</name>
+    <price>500</price>
+    <description><em>荷物の運搬</em>
+      にご利用できます。<em>業務用</em>の車です。
+    </description>
+    <img file="../car2.jpg"/>
+  </car>
+  <car country="USA" id="1005">
+    <name>オープンカー</name>
+    <price>200</price>
+    <description>晴天時には天窓を開閉できます。
+      <em>レジャー用</em>に最適です。
+    </description>
+    <img file="../car3.jpg"/>
+  </car>
+</cars>
