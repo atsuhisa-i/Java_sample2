@@ -1,43 +1,50 @@
-import java.io.*;
-import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
-import javax.xml.transform.dom.*;
-import org.w3c.dom.*;
+import java.net.*;
+import javafx.application.*;
+import javafx.stage.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.input.*;
+import javafx.event.*;
 
-public class Sample2
+public class Sample2 extends Application
 {
-  public static void main(String[] args)throws Exception
+  private Label lb1, lb2;
+  private TextField tf1, tf2;
+
+  public static void main(String[] args)
   {
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db = dbf.newDocumentBuilder();
+    launch(args);
+  }
+  public void start(Stage stage)throws Exception
+  {
+    try{
+      InetAddress ia = InetAddress.getLocalHost();
 
-    Document doc = db.parse(new FileInputStream("Sample.xml"));
+      lb1 = new Label("ホスト名");
+      lb2 = new Label("IPアドレス");
+      tf1 = new TextField(ia.getHostName());
+      tf2 = new TextField(ia.getHostAddress());
 
-    Document doc2 = db.newDocument();
+      BorderPane bp = new BorderPane();
+      VBox vb = new VBox();
 
-    Element root = doc2.createElement("cars");
-    doc2.appendChild(root);
+      vb.getChildren().add(lb1);
+      vb.getChildren().add(tf1);
+      vb.getChildren().add(lb2);
+      vb.getChildren().add(tf2);
 
-    NodeList lst = doc.getElementsByTagName("name");
+      bp.setCenter(vb);
 
-    for(int i=0; i<lst.getLength(); i++){
-      Node n = lst.item(i);
-      for(Node ch = n.getFirstChild();
-               ch != null;
-               ch = ch.getNextSibling()){
-         Element elm = doc2.createElement("name");
-         Text txt = doc2.createTextNode(ch.getNodeValue());
-         elm.appendChild(txt);
-         root.appendChild(elm);
-      }
+      Scene sc = new Scene(bp, 300, 200);
+
+      stage.setScene(sc);
+
+      stage.setTitle("サンプル");
+      stage.show();
     }
-
-    TransformerFactory tff = TransformerFactory.newInstance();
-    Transformer tf = tff.newTransformer();
-    tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-    tf.transform(new DOMSource(doc2),
-      new StreamResult("result.xml"));
-    System.out.println("result.xmlに出力しました。");
+    catch(Exception e){
+      e.printStackTrace();
+    }
   }
 }
