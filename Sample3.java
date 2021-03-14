@@ -1,64 +1,51 @@
 import java.io.*;
-import javafx.application.*;
-import javafx.stage.*;
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.input.*;
-import javafx.event.*;
-import javafx.geometry.*;
+import java.util.*;
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
+import javax.xml.transform.dom.*;
+import org.w3c.dom.*;
 
-public class Sample3 extends Application
+public class Sample3
 {
-  private Label lb1, lb2, lb3, lb4;
-  private Button bt;
-
-  public static void main(String[] args)
+  public static void main(String[] args)throws Exception
   {
-    launch(args);
-  }
-  public void start(Stage stage)throws Exception
-  {
-    lb1 = new Label("ファイルを選択して下さい。");
-    lb2 = new Label();
-    lb3 = new Label();
-    lb4 = new Label();
-    bt = new Button("選択");
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder db = dbf.newDocumentBuilder();
 
-    BorderPane bp = new BorderPane();
-    VBox vb = new VBox();
+    Document doc = db.newDocument();
 
-    vb.getChildren().add(lb1);
-    vb.getChildren().add(lb2);
-    vb.getChildren().add(lb3);
-    vb.getChildren().add(lb4);
+    Element root = doc.createElement("車リスト");
+    doc.appendChild(root);
 
-    bp.setTop(lb1);
-    bp.setCenter(vb);
-    bp.setBottom(bt);
-    bp.setAlignment(bt, Pos.CENTER);
+    BufferedReader br = new BufferedReader(new FileReader("Sample.csv"));
 
-    bt.setOnAction(new SampleEventHandler());
+    ArrayList<String> colname = new ArrayList<String>();
+    String line = br.readLine();
+    StringTokenizer stt = new StringTokenizer(line, ",");
+    while(stt.hasMoreTokens()){
+      colname.add(stt.nextToken());
+    }
 
-    Scene sc = new Scene(bp, 300, 200);
+    while((line = br.readLine()) != null){
+      StringTokenizer std = new StringTokenizer(line, ",");
+      Element car = doc.createElement("車");
+      root.appendChild(car);
 
-    stage.setScene(sc);
-
-    stage.setTitle("サンプル");
-    stage.show();
-  }
-
-  class SampleEventHandler implements EventHandler<ActionEvent>
-  {
-    public void handle(ActionEvent e)
-    {
-      FileChooser fc = new FileChooser();
-      File fl = fc.showOpenDialog(new Stage());
-      if(fl !=null){
-        lb2.setText("ファイル名は" + fl.getName() + "です。");
-        lb3.setText("絶対パスは" + fl.getAbsolutePath() + "です。");
-        lb4.setText("サイズは" + fl.length() + "バイトです。");
+      for(int i=0; i<colname.size(); i++){
+        Element elm = doc.createElement((String)colname.get(i));
+        Text txt = doc.createTextNode(std.nextToken());
+        elm.appendChild(txt);
+        car.appendChild(elm);
       }
     }
+    br.close();
+
+    TransformerFactory tff = TransformerFactory.newInstance();
+    Transformer tf = tff.newTransformer();
+    tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+    tf.transform(new DOMSource(doc),
+      new StreamResult("result.xml"));
+    System.out.println("result.xmlに出力しました。");
   }
 }

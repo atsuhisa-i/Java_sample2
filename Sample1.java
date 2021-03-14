@@ -1,22 +1,23 @@
 import java.io.*;
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
+import javax.xml.transform.dom.*;
+import org.w3c.dom.*;
 
 public class Sample1
 {
-  public static void main(String[] args)
+  public static void main(String[] args)throws Exception
   {
-    if(args.length !=1){
-      System.out.println("パラメータの数が違います。");
-      System.exit(1);
-    }
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder db = dbf.newDocumentBuilder();
 
-    try{
-      File fl = new File(args[0]);
-      System.out.println("ファイル名は" + fl.getName() + "です。");
-      System.out.println("絶対パスは" + fl.getAbsolutePath() + "です。");
-      System.out.println("サイズは" + fl.length() + "バイトです。");
-    }
-    catch(Exception e){
-      e.printStackTrace();
-    }
+    Document doc = db.parse(new FileInputStream("Sample.xml"));
+
+    TransformerFactory tff = TransformerFactory.newInstance();
+    Transformer tf = tff.newTransformer();
+    tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+    tf.transform(new DOMSource(doc), new StreamResult("result.xml"));
+    System.out.println("result.xmlに出力しました。");
   }
 }

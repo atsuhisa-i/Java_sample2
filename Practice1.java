@@ -1,88 +1,43 @@
 import java.io.*;
-import javafx.application.*;
-import javafx.stage.*;
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.input.*;
-import javafx.event.*;
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
+import javax.xml.transform.dom.*;
+import org.w3c.dom.*;
 
-public class Practice1 extends Application
+public class Practice1
 {
-  private Label lb;
-  private TextArea ta;
-  private Button bt1, bt2;
-
-  public static void main(String[] args)
+  public static void main(String[] args)throws Exception
   {
-    launch(args);
-  }
-  public void start(Stage stage)throws Exception
-  {
-    lb = new Label("ファイルを選択して下さい。");
-    ta = new TextArea();
-    bt1 = new Button("読込");
-    bt2 = new Button("保存");
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder db = dbf.newDocumentBuilder();
 
-    BorderPane bp = new BorderPane();
-    HBox hb = new HBox();
+    Document doc = db.parse(new FileInputStream("Sample.xml"));
 
-    hb.getChildren().add(bt1);
-    hb.getChildren().add(bt2);
+    Document doc2 = db.newDocument();
 
-    bp.setTop(lb);
-    bp.setCenter(ta);
-    bp.setBottom(hb);
+    Element root = doc2.createElement("cars");
+    doc2.appendChild(root);
 
-    bt1.setOnAction(new SampleEventHandler());
-    bt2.setOnAction(new SampleEventHandler());
+    NodeList lst = doc.getElementsByTagName("price");
 
-    Scene sc = new Scene(bp, 300, 200);
-
-    stage.setScene(sc);
-
-    stage.setTitle("サンプル");
-    stage.show();
-  }
-
-  class SampleEventHandler implements EventHandler<ActionEvent>
-  {
-    public void handle(ActionEvent e)
-    {
-      FileChooser fc = new FileChooser();
-      fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("javaファイル", "*.java"));
-      if(e.getSource() == bt1){
-        try{
-          File flo = fc.showOpenDialog(new Stage());
-          if(flo != null){
-            BufferedReader br = new BufferedReader(new FileReader(flo));
-            StringBuffer sb = new StringBuffer();
-            String str = null;
-            while((str = br.readLine()) != null){
-              sb.append(str + "\n");
-            }
-            ta.setText(sb.toString());
-            br.close();
-          }
-        }
-        catch(Exception ex){
-          ex.printStackTrace();
-        }
-      }
-      else if(e.getSource() == bt2){
-        try{
-          File fls = fc.showSaveDialog(new Stage());
-          if(fls !=null){
-            BufferedWriter bw = new BufferedWriter(new FileWriter(fls));
-            String str = ta.getText();
-            bw.write(str);
-            bw.close();
-          }
-        }
-        catch(Exception ex){
-          ex.printStackTrace();
-        }
+    for(int i=0; i<lst.getLength(); i++){
+      Node n = lst.item(i);
+      for(Node ch = n.getFirstChild();
+               ch != null;
+               ch = ch.getNextSibling()){
+          Element elm = doc2.createElement("price");
+          Text txt = doc2.createTextNode(ch.getNodeValue());
+          elm.appendChild(txt);
+          root.appendChild(elm);
       }
     }
+
+    TransformerFactory tff = TransformerFactory.newInstance();
+    Transformer tf = tff.newTransformer();
+    tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+    tf.transform(new DOMSource(doc2),
+      new StreamResult("result.xml"));
+    System.out.println("result.xmlに出力しました。");
   }
 }

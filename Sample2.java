@@ -1,31 +1,43 @@
 import java.io.*;
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
+import javax.xml.transform.dom.*;
+import org.w3c.dom.*;
 
 public class Sample2
 {
-  public static void main(String[] args)
+  public static void main(String[] args)throws Exception
   {
-    if(args.length !=2){
-      System.out.println("パラメータの数が違います。");
-      System.exit(1);
-    }
-    try{
-      File fl1 = new File(args[0]);
-      File fl2 = new File(args[1]);
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder db = dbf.newDocumentBuilder();
 
-      System.out.println("変更前のファイル名は" + fl1.getName() + "です。");
+    Document doc = db.parse(new FileInputStream("Sample.xml"));
 
-      boolean res = fl1.renameTo(fl2);
+    Document doc2 = db.newDocument();
 
-      if(res == true){
-        System.out.println("ファイル名を変更しました。");
-        System.out.println("変更後のファイル名は" + fl2.getName() + "です。");
+    Element root = doc2.createElement("cars");
+    doc2.appendChild(root);
+
+    NodeList lst = doc.getElementsByTagName("name");
+
+    for(int i=0; i<lst.getLength(); i++){
+      Node n = lst.item(i);
+      for(Node ch = n.getFirstChild();
+               ch != null;
+               ch = ch.getNextSibling()){
+         Element elm = doc2.createElement("name");
+         Text txt = doc2.createTextNode(ch.getNodeValue());
+         elm.appendChild(txt);
+         root.appendChild(elm);
       }
-      else{
-        System.out.println("ファイル名を変更できませんでした。");
-      }
     }
-    catch(Exception e){
-      e.printStackTrace();
-    }
+
+    TransformerFactory tff = TransformerFactory.newInstance();
+    Transformer tf = tff.newTransformer();
+    tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+    tf.transform(new DOMSource(doc2),
+      new StreamResult("result.xml"));
+    System.out.println("result.xmlに出力しました。");
   }
 }

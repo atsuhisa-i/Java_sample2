@@ -1,46 +1,42 @@
-import java.sql.*;
+import java.io.*;
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
+import javax.xml.transform.dom.*;
+import org.w3c.dom.*;
 
 public class Practice2
 {
-  public static void main(String args[])
+  public static void main(String[] args)throws Exception
   {
-    if(args.length !=3){
-      System.out.println("パラメータの数が違います。");
-      System.exit(1);
-    }
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    DocumentBuilder db = dbf.newDocumentBuilder();
 
-    try{
-      String url = "jdbc:derby:fooddb;create=true";
-      String usr = "";
-      String pw = "";
+    Document doc = db.newDocument();
 
-      Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+    Element root = doc.createElement("果物リスト");
+    doc.appendChild(root);
 
-      Connection cn = DriverManager.getConnection(url, usr, pw);
+    Element fruit = doc.createElement("果物");
+    root.appendChild(fruit);
 
-      Statement st = cn.createStatement();
-      String qry1 = "INSERT INTO 果物表 VALUES (" + args[0] + " , '" + args[1] + "' , '" + args[2] + "')";
-      String qry2 = "SELECT * FROM 果物表";
+    Element elm1 = doc.createElement("名前");
+    Text txt1 = doc.createTextNode("みかん");
+    elm1.appendChild(txt1);
+    fruit.appendChild(elm1);
 
-      st.executeUpdate(qry1);
-      ResultSet rs = st.executeQuery(qry2);
+    Element elm2 = doc.createElement("仕入先");
+    Text txt2 = doc.createTextNode("青山商店");
+    elm2.appendChild(txt2);
+    fruit.appendChild(elm2);
 
-      ResultSetMetaData rm = rs.getMetaData();
-      int cnum = rm.getColumnCount();
-      while(rs.next()){
-        for(int i=1; i<=cnum; i++){
-          System.out.print(rm.getColumnName(i) + ":" + 
-            rs.getObject(i) + "  ");
-        }
-        System.out.println("");
-      }
+    TransformerFactory tff = TransformerFactory.newInstance();
+    Transformer tf = tff.newTransformer();
+    tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+    tf.transform(new DOMSource(doc), new 
+      StreamResult("result.xml"));
+    System.out.println("result.xmlに出力しました。");
 
-      rs.close();
-      st.close();
-      cn.close();
-    }
-    catch(Exception e){
-      e.printStackTrace();
-    }
+  
   }
 }
