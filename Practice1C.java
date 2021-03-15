@@ -1,3 +1,4 @@
+import java.io.*;
 import java.net.*;
 import javafx.application.*;
 import javafx.stage.*;
@@ -7,10 +8,15 @@ import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import javafx.event.*;
 
-public class Sample3 extends Application
+public class Practice1C extends Application
 {
-  private Label lb1, lb2, lb3;
-  private TextField tf1, tf2, tf3;
+  // public static final String HOST = "localhost";
+  // public static final int PORT = 10000;
+
+  private Label lb1, lb2;
+  private TextField tf1, tf2;
+
+  private TextArea ta;
   private Button bt;
 
   public static void main(String[] args)
@@ -22,25 +28,23 @@ public class Sample3 extends Application
     try{
       InetAddress ia = InetAddress.getLocalHost();
 
-      lb1 = new Label("入力して下さい。");
-      lb2 = new Label("ホスト名");
-      lb3 = new Label("IPアドレス");
+      lb1 = new Label("ホスト");
+      lb2 = new Label("ポート");
       tf1 = new TextField();
       tf2 = new TextField();
-      tf3 = new TextField();
-      bt = new Button("検索");
+      ta = new TextArea();
+      bt = new Button("接続");
 
+      GridPane gp = new GridPane();
       BorderPane bp = new BorderPane();
-      VBox vb = new VBox();
 
-      vb.getChildren().add(lb1);
-      vb.getChildren().add(tf1);
-      vb.getChildren().add(lb2);
-      vb.getChildren().add(tf2);
-      vb.getChildren().add(lb3);
-      vb.getChildren().add(tf3);
+      gp.add(lb1, 0, 0);
+      gp.add(lb2, 0, 1);
+      gp.add(tf1, 1, 0);
+      gp.add(tf2, 1, 1);
 
-      bp.setCenter(vb);
+      bp.setTop(gp);
+      bp.setCenter(ta);
       bp.setBottom(bt);
 
       bt.setOnAction(new SampleEventHandler());
@@ -56,15 +60,21 @@ public class Sample3 extends Application
       e.printStackTrace();
     }
   }
-
   class SampleEventHandler implements EventHandler<ActionEvent>
   {
     public void handle(ActionEvent e)
     {
       try{
         InetAddress ia = InetAddress.getByName(tf1.getText());
-        tf2.setText(ia.getHostName());
-        tf3.setText(ia.getHostAddress());
+        String host = ia.getHostName();
+        int port = Integer.parseInt(tf2.getText());
+
+        Socket sc = new Socket(host, port);
+        BufferedReader br = new BufferedReader(new InputStreamReader(sc.getInputStream()));
+        String str = br.readLine();
+        ta.setText(str);
+        br.close();
+        sc.close();
       }
       catch(Exception ex){
         ex.printStackTrace();

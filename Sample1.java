@@ -1,23 +1,58 @@
 import java.io.*;
-import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
-import javax.xml.transform.dom.*;
-import org.w3c.dom.*;
+import javafx.application.*;
+import javafx.stage.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.input.*;
+import javafx.scene.web.*;
+import javafx.event.*;
 
-public class Sample1
+public class Sample1 extends Application
 {
-  public static void main(String[] args)throws Exception
+  private TextField tf;
+  private WebView wv;
+  private Button bt;
+
+  public static void main(String[] args)
   {
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db = dbf.newDocumentBuilder();
+    launch(args);
+  }
+  public void start(Stage stage)throws Exception
+  {
+    tf = new TextField();
+    wv = new WebView();
+    bt = new Button("読込");
 
-    Document doc = db.parse(new FileInputStream("Sample.xml"));
+    BorderPane bp = new BorderPane();
+    VBox vb = new VBox();
 
-    TransformerFactory tff = TransformerFactory.newInstance();
-    Transformer tf = tff.newTransformer();
-    tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-    tf.transform(new DOMSource(doc), new StreamResult("result.xml"));
-    System.out.println("result.xmlに出力しました。");
+    vb.getChildren().addAll(bt, tf);
+
+    bp.setTop(vb);
+    bp.setCenter(wv);
+
+    bt.setOnAction(new SampleEventHandler());
+
+    Scene sc = new Scene(bp, 600, 600);
+
+    stage.setScene(sc);
+
+    stage.setTitle("サンプル");
+    stage.show();
+  }
+
+  class SampleEventHandler implements EventHandler<ActionEvent>
+  {
+    public void handle(ActionEvent e)
+    {
+      try{
+        WebEngine we = wv.getEngine();
+        we.load(tf.getText());
+      }
+      catch(Exception ex){
+        ex.printStackTrace();
+      }
+    }
   }
 }
